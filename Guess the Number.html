@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Guess the Number</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f6f6f6;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .game-container {
+            margin-top: 50px;
+        }
+
+        .guess-input {
+            padding: 5px;
+            font-size: 16px;
+        }
+
+        .guess-button {
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .message {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .attempts {
+            margin-top: 10px;
+        }
+
+        .play-again {
+            margin-top: 20px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Guess the Number</h1>
+
+    <div class="game-container">
+        <p>Guess a number between 1 and 100:</p>
+        <input type="number" id="guessInput" class="guess-input">
+        <button class="guess-button" onclick="checkGuess()">Guess</button>
+
+        <div id="message"></div>
+
+        <div id="attempts"></div>
+
+        <button class="play-again" onclick="resetGame()">Play Again</button>
+    </div>
+
+    <script>
+        var targetNumber;
+        var attempts;
+        var maxAttempts;
+
+        function startGame() {
+            targetNumber = Math.floor(Math.random() * 100) + 1;
+            attempts = 0;
+            maxAttempts = 3;
+            showMessage("", "black");
+            showAttempts();
+            enableInput();
+        }
+
+        function checkGuess() {
+            var guessInput = document.getElementById("guessInput");
+            var guess = parseInt(guessInput.value);
+
+            if (isNaN(guess) || guess < 1 || guess > 100) {
+                showMessage("Please enter a valid number between 1 and 100.", "red");
+                return;
+            }
+
+            attempts++;
+            if (guess === targetNumber) {
+                showMessage("Congratulations! You guessed the correct number in " + attempts + " attempts.", "green");
+                disableInput();
+                showPlayAgain();
+            } else if (guess < targetNumber) {
+                var hint = "Too low! Try a higher number.";
+                if (attempts === maxAttempts) {
+                    hint += " The correct number was " + targetNumber + ".";
+                    disableInput();
+                    showPlayAgain();
+                }
+                showMessage(hint, "red");
+            } else {
+                var hint = "Too high! Try a lower number.";
+                if (attempts === maxAttempts) {
+                    hint += " The correct number was " + targetNumber + ".";
+                    disableInput();
+                    showPlayAgain();
+                }
+                showMessage(hint, "red");
+            }
+
+            guessInput.value = "";
+            guessInput.focus();
+            showAttempts();
+        }
+
+        function resetGame() {
+            enableInput();
+            startGame();
+            hidePlayAgain();
+        }
+
+        function showMessage(message, color) {
+            var messageElement = document.getElementById("message");
+            messageElement.textContent = message;
+            messageElement.style.color = color || "black";
+        }
+
+        function showAttempts() {
+            var attemptsElement = document.getElementById("attempts");
+            attemptsElement.textContent = "Attempts: " + attempts + " / " + maxAttempts;
+        }
+
+        function disableInput() {
+            var guessInput = document.getElementById("guessInput");
+            guessInput.disabled = true;
+        }
+
+        function enableInput() {
+            var guessInput = document.getElementById("guessInput");
+            guessInput.disabled = false;
+            guessInput.value = "";
+            guessInput.focus();
+        }
+
+        function showPlayAgain() {
+            var playAgainButton = document.getElementsByClassName("play-again")[0];
+            playAgainButton.style.display = "inline-block";
+        }
+
+        function hidePlayAgain() {
+            var playAgainButton = document.getElementsByClassName("play-again")[0];
+            playAgainButton.style.display = "none";
+        }
+
+        startGame();
+    </script>
+</body>
+</html>
